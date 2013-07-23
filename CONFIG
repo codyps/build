@@ -1,0 +1,9 @@
+#! /bin/sh
+
+GIT_DIR=$HOME/g
+PREFIX_DIR=$HOME/x
+CFLAGS="-march=native -O2 -flto"
+CXXFLAGS="$CFLAGS"
+LDFLAGS="$CFLAGS -Wl,--as-needed,--build-id -fuse-linker-plugin"
+TMPDIR=/tmp
+MAKE_OPTS="-j8"

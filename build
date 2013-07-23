@@ -1,0 +1,37 @@
+#! /bin/sh
+
+# Expects $NAME to be set
+warn () {
+	printf "%s\n" "$*"
+}
+
+die () {
+	warn "$@"
+	exit 1
+}
+
+emake () {
+	do_or_die make $MAKE_OPTS "$@"
+}
+
+make_and_install () {
+	emake "$@" && emake install "$@"
+}
+
+do_or_die () {
+	"$@" || die "Failure when running '$@'"
+}
+
+if [ -z "$NAME" ]; then
+	warn "\$NAME is unset, fix build script"
+	exit 1
+fi
+
+. $(dirname $0)/CONFIG
+
+SRC_DIR=$GIT_DIR/$NAME
+PREFIX=$PREFIX_DIR/$NAME
+mkdir -p "$TMPDIR/build-$NAME"
+BUILD_DIR="$(mktemp -d  "$TMPDIR/build-$NAME/XXXXX")"
+
+cd "$BUILD_DIR" || die "Failed to cd to \"$BUILD_DIR\""
