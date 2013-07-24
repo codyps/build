@@ -1,0 +1,15 @@
+#! /bin/sh
+
+. "$(dirname "$0")/helpers"
+load_config
+
+for g in "$GIT_DIR"/*; do
+	name=$(basename "$g")
+	bs="$B/build-$name"
+	if ! [ -x "$bs" ]; then
+		debug "skipping $name because $bs does not exsist or is not executable"
+		continue
+	fi
+
+	$bs
+done

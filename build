@@ -1,33 +1,15 @@
 #! /bin/sh
 
 # Expects $NAME to be set
-warn () {
-	printf "%s\n" "$*"
-}
+# And sourced in build script.
 
-die () {
-	warn "$@"
-	exit 1
-}
-
-emake () {
-	do_or_die make $MAKE_OPTS "$@"
-}
-
-make_and_install () {
-	emake "$@" && emake install "$@"
-}
-
-do_or_die () {
-	"$@" || die "Failure when running '$@'"
-}
-
+. "$(dirname "$0")/helpers"
 if [ -z "$NAME" ]; then
 	warn "\$NAME is unset, fix build script"
 	exit 1
 fi
 
-. $(dirname $0)/CONFIG
+load_config
 
 SRC_DIR=$GIT_DIR/$NAME
 PREFIX=$PREFIX_DIR/$NAME

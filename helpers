@@ -1,0 +1,72 @@
+#! /bin/sh
+
+B=$(dirname "$0")
+
+warn () {
+	printf "%s\n" "$*"
+}
+
+debug () {
+	if [ -n "$DEBUG" ]; then
+		warn "$*"
+	fi
+}
+
+die () {
+	warn "$@"
+	exit 1
+}
+
+emake () {
+	do_or_die make $MAKE_OPTS "$@"
+}
+
+make_and_install () {
+	emake "$@" && emake install "$@"
+}
+
+do_or_die () {
+	"$@" || die "Failure when running '$@'"
+}
+
+check_dir () {
+	eval v=\$$1
+	debug "$GIT_DIR"
+	debug check dir $1 = $v
+	if ! [ -d "$v" ]; then
+		die "Error: \$$1=\"$v\" is not a dir"
+	fi
+}
+
+check_not_file () {
+	eval v=\$$1
+	if [ -e "$v" ] && ! [ -d "$v" ]; then
+		die "Error: \$$1=\"$v\" is a file, must not exist or be a dir"
+	fi
+}
+
+check_dir_or () {
+	eval v=\$$1
+	if [ -z "$v" ]; then
+		# FIXME: assumes $1 doesn't contain any nasty chars.
+		eval "$1=/tmp"
+	fi
+
+	check_dir "$1"
+}
+
+check_config () {
+	check_dir	GIT_DIR
+	check_not_file	PREFIX_DIR
+	check_dir_or	TMPDIR  "/tmp"
+
+	# Optional config vars:
+	# - MAKE_OPTS
+	# - env vars for other build scripts (make/configure)
+	#   Such as CFLAGS, CXXFLAGS, LDFLAGS
+}
+
+load_config () {
+	. "$B/CONFIG"
+	check_config
+}
