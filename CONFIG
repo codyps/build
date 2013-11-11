@@ -1,7 +1,12 @@
 #! /bin/sh
 
-GIT_DIR="$HOME/g"
-PREFIX_DIR="$HOME/x"
+if [ -z "$GIT_DIR" ]; then
+  GIT_DIR="$HOME/g"
+fi
+
+if [ -z "PREFIX_DIR" ]; then
+  PREFIX_DIR="$HOME/x"
+fi
 
 #TMPDIR=/tmp
 MAKE_OPTS="-j8"

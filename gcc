@@ -1,0 +1,6 @@
+#! /bin/sh
+
+d=$(dirname "$0")
+
+$d/_gcc build powerpc64
+$d/_gcc build x86_64
